@@ -25,6 +25,16 @@ dist/        Bundled JSON-LD, Turtle, RDF/XML, and OWL distributions
 Each section also includes an `index.html` page for browsing through GitHub
 Pages.
 
+## License
+
+The generated vocabulary and publication artifacts in this repository are
+licensed under the Creative Commons Attribution 4.0 International license
+(`CC-BY-4.0`). See [LICENSE](LICENSE).
+
+The source toolkit used to generate these artifacts is maintained separately in
+`TIBHannover/datacite-metadata-toolkit`; its code and tooling are licensed as
+`Apache-2.0`.
+
 ## Regeneration Workflow
 
 From the source toolkit checkout:
