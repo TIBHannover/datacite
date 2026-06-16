@@ -5,150 +5,331 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>DataCite Linked Data</title>
   <meta name="description" content="Browse the TIB-maintained DataCite linked-data vocabulary namespace.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
       --dc-navy: #243B54;
+      --dc-navy-deep: #182838;
       --dc-cyan: #00B1E2;
       --dc-blue: #5B88B9;
       --dc-teal: #46BCAB;
       --dc-mint: #90D7CD;
       --dc-magenta: #BC2B66;
+      --dc-coral: #F07C73;
       --dc-yellow: #EEEE98;
-      --bg: color-mix(in srgb, var(--dc-mint) 12%, white);
-      --panel: color-mix(in srgb, white 95%, var(--dc-yellow) 5%);
-      --panel-2: color-mix(in srgb, white 90%, var(--dc-mint) 10%);
+
+      --bg: #F6FAFC;
+      --bg-elev: #FFFFFF;
+      --panel: #FFFFFF;
+      --panel-soft: #F1F7FA;
       --text: var(--dc-navy);
-      --muted: color-mix(in srgb, var(--dc-navy) 70%, var(--dc-blue));
-      --line: color-mix(in srgb, var(--dc-blue) 28%, white);
+      --text-strong: #16263A;
+      --muted: #5E748C;
+      --line: #E2ECF2;
+      --line-strong: #CFDCE5;
       --accent: var(--dc-cyan);
-      --shadow: 0 10px 24px rgba(36, 59, 84, 0.08);
-      --radius: 14px;
-      --max: 1120px;
+      --accent-strong: #0095BF;
+
+      --shadow-sm: 0 1px 2px rgba(24, 40, 56, 0.05), 0 1px 3px rgba(24, 40, 56, 0.04);
+      --shadow-md: 0 4px 12px rgba(24, 40, 56, 0.06), 0 2px 4px rgba(24, 40, 56, 0.04);
+      --shadow-lg: 0 18px 38px rgba(24, 40, 56, 0.10), 0 6px 14px rgba(24, 40, 56, 0.06);
+
+      --radius-sm: 10px;
+      --radius: 16px;
+      --radius-lg: 22px;
+      --max: 1180px;
+
+      --grad-hero: linear-gradient(135deg, #243B54 0%, #2F5176 45%, #00B1E2 100%);
+      --grad-accent: linear-gradient(135deg, var(--dc-cyan), var(--dc-teal));
+      --grad-warm: linear-gradient(135deg, var(--dc-magenta), var(--dc-coral));
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: var(--dc-navy);
-        --panel: color-mix(in srgb, var(--dc-navy) 82%, var(--dc-blue));
-        --panel-2: color-mix(in srgb, var(--dc-navy) 68%, var(--dc-teal));
-        --text: color-mix(in srgb, white 92%, var(--dc-mint));
-        --muted: color-mix(in srgb, white 58%, var(--dc-mint));
-        --line: color-mix(in srgb, var(--dc-blue) 35%, var(--dc-navy));
+        --bg: #0E1A26;
+        --bg-elev: #16263A;
+        --panel: #1A2D43;
+        --panel-soft: #213750;
+        --text: #E8F1F7;
+        --text-strong: #FFFFFF;
+        --muted: #94AFC4;
+        --line: #2A4361;
+        --line-strong: #355279;
         --accent: var(--dc-cyan);
-        --shadow: none;
+        --accent-strong: #4DCDEF;
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35);
+        --shadow-lg: 0 18px 38px rgba(0, 0, 0, 0.45);
       }
     }
+
     * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
       color: var(--text);
-      background:
-        radial-gradient(1000px 500px at 95% -10%, color-mix(in srgb, #F07C73 20%, transparent), transparent 60%),
-        radial-gradient(800px 420px at -10% 10%, color-mix(in srgb, var(--dc-cyan) 16%, transparent), transparent 65%),
-        var(--bg);
-      font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
-      line-height: 1.45;
+      background: var(--bg);
+      font-family: 'Inter', system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-feature-settings: "cv11", "ss01";
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
-    a {
-      color: var(--accent);
-      text-underline-offset: 0.12em;
-      text-decoration-thickness: 0.08em;
-    }
-    a:hover { text-decoration-thickness: 0.12em; }
+
+    a { color: var(--accent-strong); text-decoration: none; }
+    a:hover { color: var(--accent); }
+
     .wrap { width: min(100% - 2rem, var(--max)); margin: 0 auto; }
+
+    /* ── Top bar ─────────────────────────────────────── */
     .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      backdrop-filter: blur(6px);
-      background: color-mix(in srgb, var(--bg) 88%, transparent);
-      border-bottom: 1px solid color-mix(in srgb, var(--line) 75%, transparent);
+      position: sticky; top: 0; z-index: 20;
+      backdrop-filter: saturate(180%) blur(14px);
+      -webkit-backdrop-filter: saturate(180%) blur(14px);
+      background: color-mix(in srgb, var(--bg) 80%, transparent);
+      border-bottom: 1px solid var(--line);
     }
     .topbar .wrap {
-      display: flex;
-      flex-wrap: wrap;
+      display: flex; align-items: center;
       justify-content: space-between;
-      gap: .75rem;
-      padding: .7rem 0;
+      gap: 1rem; padding: .9rem 0;
     }
-    .brand { color: var(--text); text-decoration: none; font-weight: 700; }
-    .nav { display: flex; flex-wrap: wrap; gap: .35rem; }
+    .brand {
+      display: inline-flex; align-items: center; gap: .6rem;
+      color: var(--text-strong); font-weight: 700; letter-spacing: -0.01em;
+      font-size: 1.02rem;
+    }
+    .brand-mark {
+      width: 32px; height: 32px; border-radius: 9px;
+      background: var(--grad-accent);
+      display: grid; place-items: center; color: white;
+      font-weight: 800; font-size: .9rem;
+      box-shadow: 0 4px 12px rgba(0, 177, 226, 0.35);
+    }
+    .nav { display: flex; flex-wrap: wrap; gap: .15rem; }
     .nav a {
-      text-decoration: none;
       color: var(--muted);
-      font-size: .95rem;
-      padding: .35rem .55rem;
-      border-radius: 999px;
+      font-size: .92rem; font-weight: 500;
+      padding: .45rem .8rem; border-radius: 999px;
+      transition: all .18s ease;
     }
     .nav a:hover, .nav a:focus-visible {
-      background: var(--panel-2);
-      color: var(--text);
+      background: var(--panel-soft); color: var(--text-strong);
       outline: none;
     }
-    main { padding: 1rem 0 2rem; }
-    .hero, .panel {
+    .nav a[aria-current="page"] {
+      background: var(--text-strong); color: var(--bg-elev);
+    }
+
+    /* ── Hero ───────────────────────────────────────── */
+    main { padding: 2rem 0 3rem; }
+    .hero {
+      position: relative; overflow: hidden;
+      background: var(--grad-hero);
+      color: white;
+      border-radius: var(--radius-lg);
+      padding: 3rem 2.25rem;
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 2rem;
+      isolation: isolate;
+    }
+    .hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(600px 300px at 90% -10%, rgba(240, 124, 115, .55), transparent 60%),
+        radial-gradient(500px 280px at -5% 110%, rgba(70, 188, 171, .55), transparent 60%);
+      z-index: -1;
+    }
+    .hero::after {
+      content: "";
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+      -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+      z-index: -1;
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.22);
+      color: white;
+      border-radius: 999px;
+      padding: .35rem .75rem;
+      font-size: .8rem; font-weight: 500;
+      letter-spacing: .02em;
+      backdrop-filter: blur(8px);
+    }
+    .eyebrow .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--dc-mint); box-shadow: 0 0 0 4px rgba(144, 215, 205, .25);
+    }
+    .hero h1 {
+      margin: 1.1rem 0 .9rem;
+      font-size: clamp(2rem, 4vw + 1rem, 3.4rem);
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+      font-weight: 800;
+      color: white;
+    }
+    .hero p.lede {
+      font-size: clamp(1rem, .5vw + .9rem, 1.15rem);
+      color: rgba(255,255,255,.85);
+      max-width: 62ch;
+      margin: 0 0 1.4rem;
+    }
+    .hero p.lede a { color: white; text-decoration: underline; text-decoration-color: rgba(255,255,255,.45); text-underline-offset: 3px; }
+    .hero p.lede a:hover { text-decoration-color: white; }
+    .meta { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .chip {
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.92);
+      border-radius: 999px;
+      padding: .3rem .7rem;
+      font-size: .82rem; font-weight: 500;
+      backdrop-filter: blur(8px);
+    }
+
+    /* ── Section heading ────────────────────────────── */
+    .section-head {
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: 1rem; margin: 2.2rem 0 1rem;
+    }
+    .section-head h2 {
+      margin: 0;
+      font-size: 1.35rem; font-weight: 700;
+      letter-spacing: -0.015em; color: var(--text-strong);
+    }
+    .section-head .hint {
+      color: var(--muted); font-size: .9rem;
+    }
+
+    /* ── Card grid ──────────────────────────────────── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      position: relative;
+      display: flex; flex-direction: column;
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      box-shadow: var(--shadow);
+      padding: 1.35rem 1.35rem 1.15rem;
+      box-shadow: var(--shadow-sm);
+      transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+      overflow: hidden;
+      isolation: isolate;
     }
-    .hero { padding: 1.1rem; margin: 1rem 0; }
-    .panel { padding: 1rem; margin: .9rem 0; }
-    .eyebrow {
-      display: inline-block;
-      border: 1px solid var(--line);
-      background: var(--panel-2);
+    .card::before {
+      content: "";
+      position: absolute; inset: 0; bottom: auto; height: 3px;
+      background: var(--grad-accent);
+      opacity: 0; transition: opacity .22s ease;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--line-strong);
+    }
+    .card:hover::before { opacity: 1; }
+    .card-icon {
+      width: 40px; height: 40px;
+      border-radius: 11px;
+      display: grid; place-items: center;
+      margin-bottom: .9rem;
+      background: var(--panel-soft);
+      color: var(--accent-strong);
+    }
+    .card-icon svg { width: 20px; height: 20px; }
+    .card:nth-child(6n+1) .card-icon { background: color-mix(in srgb, var(--dc-cyan) 12%, transparent); color: var(--dc-cyan); }
+    .card:nth-child(6n+2) .card-icon { background: color-mix(in srgb, var(--dc-teal) 12%, transparent); color: var(--dc-teal); }
+    .card:nth-child(6n+3) .card-icon { background: color-mix(in srgb, var(--dc-blue) 14%, transparent); color: var(--dc-blue); }
+    .card:nth-child(6n+4) .card-icon { background: color-mix(in srgb, var(--dc-magenta) 12%, transparent); color: var(--dc-magenta); }
+    .card:nth-child(6n+5) .card-icon { background: color-mix(in srgb, var(--dc-coral) 14%, transparent); color: var(--dc-coral); }
+    .card:nth-child(6n+6) .card-icon { background: color-mix(in srgb, var(--dc-navy) 12%, transparent); color: var(--dc-navy); }
+
+    .card h3 {
+      margin: 0 0 .35rem;
+      font-size: 1.08rem; font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .card h3 a {
+      color: var(--text-strong);
+      background-image: linear-gradient(var(--accent), var(--accent));
+      background-size: 0 2px; background-repeat: no-repeat;
+      background-position: 0 100%;
+      transition: background-size .25s ease;
+    }
+    .card:hover h3 a { background-size: 100% 2px; }
+    .card p {
+      margin: 0 0 1rem;
       color: var(--muted);
-      border-radius: 999px;
-      padding: .2rem .55rem;
-      font-size: .82rem;
+      font-size: .94rem;
+      flex: 1;
     }
-    h1 {
-      margin: .6rem 0 .35rem;
-      line-height: 1.08;
-      font-size: clamp(1.4rem, 2vw + 1rem, 2.2rem);
-    }
-    h2 { margin: 0 0 .6rem; font-size: 1.15rem; }
-    p { margin: .35rem 0 .75rem; }
-    .muted { color: var(--muted); }
-    .meta { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .5rem; }
-    .chip {
-      border: 1px solid var(--line);
-      background: var(--panel-2);
-      color: var(--muted);
-      border-radius: 999px;
-      padding: .25rem .55rem;
-      font-size: .88rem;
-    }
-    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: .75rem; }
-    .card {
-      grid-column: span 12;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: color-mix(in srgb, var(--panel) 94%, white 6%);
-      padding: .8rem;
-    }
-    .card p { color: var(--muted); }
     .card .path {
-      font-size: .9rem;
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: .8rem;
       color: var(--muted);
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: .35rem .55rem;
+      align-self: flex-start;
       word-break: break-word;
+      max-width: 100%;
     }
-    .footer {
+    .card .arrow {
+      position: absolute; top: 1.2rem; right: 1.2rem;
       color: var(--muted);
-      text-align: center;
-      margin: 1rem 0 2rem;
-      font-size: .95rem;
+      opacity: 0; transform: translate(-4px, 4px);
+      transition: all .22s ease;
     }
-    @media (min-width: 700px) {
-      .card.span-6 { grid-column: span 6; }
-      .card.span-4 { grid-column: span 4; }
+    .card:hover .arrow {
+      opacity: 1; transform: translate(0, 0); color: var(--accent-strong);
+    }
+
+    /* ── Footer ─────────────────────────────────────── */
+    .footer {
+      margin: 3rem 0 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--line);
+      display: flex; flex-wrap: wrap;
+      justify-content: space-between; gap: 1.25rem;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+    .footer a {
+      color: var(--text-strong);
+      border-bottom: 1px dashed var(--line-strong);
+    }
+    .footer a:hover { color: var(--accent-strong); border-bottom-color: var(--accent); }
+    .footer-col { max-width: 58ch; }
+    .footer-meta { display: flex; flex-direction: column; gap: .35rem; align-items: flex-end; text-align: right; }
+    @media (max-width: 640px) {
+      .footer-meta { align-items: flex-start; text-align: left; }
+    }
+
+    @media (max-width: 640px) {
+      .hero { padding: 2rem 1.4rem; border-radius: var(--radius); }
+      .nav { display: none; }
     }
   </style>
 </head>
 <body>
   <header class="topbar">
     <div class="wrap">
-      <a class="brand" href="/datacite/">DataCite Linked Data</a>
+      <a class="brand" href="/datacite/">
+        <span class="brand-mark">DC</span>
+        <span>DataCite Linked Data</span>
+      </a>
       <nav class="nav" aria-label="Section navigation">
         <a href="/datacite/" aria-current="page">Home</a>
         <a href="/datacite/class/">Classes</a>
@@ -159,64 +340,113 @@
       </nav>
     </div>
   </header>
+
   <div class="wrap">
     <main>
       <section class="hero">
-        <span class="eyebrow">TIB production namespace</span>
+        <span class="eyebrow"><span class="dot"></span> TIB production namespace</span>
         <h1>DataCite Linked Data</h1>
-        <p class="muted">Browse the generated DataCite vocabulary bundle served by GitHub Pages for the canonical namespace <a href="https://w3id.org/tib/datacite/">https://w3id.org/tib/datacite/</a>.</p>
+        <p class="lede">
+          Browse the generated DataCite vocabulary bundle served by GitHub Pages
+          for the canonical namespace
+          <a href="https://w3id.org/tib/datacite/">w3id.org/tib/datacite/</a>.
+        </p>
         <div class="meta">
           <span class="chip">DataCite 4.6</span>
           <span class="chip">DataCite 4.7</span>
           <span class="chip">JSON-LD</span>
-          <span class="chip">RDF/Turtle</span>
+          <span class="chip">RDF / Turtle</span>
+          <span class="chip">OWL</span>
         </div>
       </section>
 
-      <section class="panel">
-        <h2>Browse</h2>
-        <div class="grid">
-          <article class="card span-4">
-            <h3><a href="/datacite/class/">Classes</a></h3>
-            <p>RDF class definitions for DataCite entities such as Resource, Creator, Title, and Rights.</p>
-            <div class="path">/class/</div>
-          </article>
-          <article class="card span-4">
-            <h3><a href="/datacite/property/">Properties</a></h3>
-            <p>RDF property definitions for DataCite metadata fields and nested structures.</p>
-            <div class="path">/property/</div>
-          </article>
-          <article class="card span-4">
-            <h3><a href="/datacite/vocab/">Controlled Terms</a></h3>
-            <p>SKOS concept schemes and terms for relation types, resource types, contributor roles, and more.</p>
-            <div class="path">/vocab/</div>
-          </article>
-          <article class="card span-6">
-            <h3><a href="/datacite/context/">Contexts</a></h3>
-            <p>JSON-LD contexts for interpreting compact DataCite JSON keys as linked data.</p>
-            <div class="path">/context/fullcontext.jsonld</div>
-          </article>
-          <article class="card span-6">
-            <h3><a href="/datacite/dist/">Distribution Artifacts</a></h3>
-            <p>Bundled JSON-LD, Turtle, RDF/XML, and OWL distribution files.</p>
-            <div class="path">/dist/datacite-current.jsonld</div>
-          </article>
-          <article class="card span-6">
-            <h3><a href="/datacite/manifest/">Manifests</a></h3>
-            <p>Versioned inventories for DataCite 4.6 and 4.7, plus the release matrix.</p>
-            <div class="path">/manifest/</div>
-          </article>
-          <article class="card span-6">
-            <h3><a href="https://github.com/TIBHannover/datacite">Repository</a></h3>
-            <p>Generated publication artifacts for the TIB-maintained DataCite linked-data namespace.</p>
-            <div class="path">TIBHannover/datacite</div>
-          </article>
+      <div class="section-head">
+        <h2>Browse the namespace</h2>
+        <span class="hint">Seven entry points · click to explore</span>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+          <div class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          </div>
+          <h3><a href="/datacite/class/">Classes</a></h3>
+          <p>RDF class definitions for DataCite entities such as Resource, Creator, Title, and Rights.</p>
+          <span class="path">/class/</span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </article>
+
+        <article class="card">
+          <div class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+          </div>
+          <h3><a href="/datacite/property/">Properties</a></h3>
+          <p>RDF property definitions for DataCite metadata fields and nested structures.</p>
+          <span class="path">/property/</span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </article>
+
+        <article class="card">
+          <div class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+          </div>
+          <h3><a href="/datacite/vocab/">Controlled Terms</a></h3>
+          <p>SKOS concept schemes and terms for relation types, resource types, contributor roles, and more.</p>
+          <span class="path">/vocab/</span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </article>
+
+        <article class="card">
+          <div class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h9l3 3v13a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M16 4v4h4M10 13l-2 2 2 2M14 13l2 2-2 2"/></svg>
+          </div>
+          <h3><a href="/datacite/context/">Contexts</a></h3>
+          <p>JSON-LD contexts for interpreting compact DataCite JSON keys as linked data.</p>
+          <span class="path">/context/fullcontext.jsonld</span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </article>
+
+        <article class="card">
+          <div class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.27 6.96 8.73 5.05 8.73-5.05M12 22V12"/></svg>
+          </div>
+          <h3><a href="/datacite/dist/">Distribution Artifacts</a></h3>
+          <p>Bundled JSON-LD, Turtle, RDF/XML, and OWL distribution files.</p>
+          <span class="path">/dist/datacite-current.jsonld</span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </article>
+
+        <article class="card">
+          <div class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6M9 9h2"/></svg>
+          </div>
+          <h3><a href="/datacite/manifest/">Manifests</a></h3>
+          <p>Versioned inventories for DataCite 4.6 and 4.7, plus the release matrix.</p>
+          <span class="path">/manifest/</span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </article>
+
+        <article class="card">
+          <div class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          </div>
+          <h3><a href="https://github.com/TIBHannover/datacite">Repository</a></h3>
+          <p>Generated publication artifacts for the TIB-maintained DataCite linked-data namespace.</p>
+          <span class="path">TIBHannover/datacite</span>
+          <span class="arrow" aria-hidden="true">↗</span>
+        </article>
+      </div>
+
+      <footer class="footer">
+        <div class="footer-col">
+          <span>Generated from the <a href="https://github.com/TIBHannover/datacite-metadata-toolkit">DataCite Metadata Toolkit</a>, which hosts the source schemas, mappings, and build pipeline behind this namespace.</span>
         </div>
-      </section>
+        <div class="footer-col footer-meta">
+          <span>Maintained &amp; created by <a href="https://github.com/selgebali">@selgebali</a></span>
+          <span><a href="https://w3id.org/tib/datacite/">w3id.org/tib/datacite/</a></span>
+        </div>
+      </footer>
     </main>
-    <footer class="footer">
-      Generated from the DataCite metadata toolkit for publication through GitHub Pages.
-    </footer>
   </div>
 </body>
 </html>
