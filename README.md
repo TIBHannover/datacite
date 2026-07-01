@@ -9,7 +9,7 @@ bundle for GitHub Pages.
 
 The files in this repository are generated publication artifacts. Make vocabulary
 source changes in the toolkit, regenerate the production namespace bundle there,
-then copy the generated bundle into this repository.
+then sync the generated bundle into this repository with a pull request.
 
 ## Directory Layout
 
@@ -24,6 +24,30 @@ dist/        Bundled JSON-LD, Turtle, RDF/XML, and OWL distributions
 
 Each section also includes an `index.html` page for browsing through GitHub
 Pages.
+
+## Generated File Counts
+
+Counts include generated JSON-LD, HTML, and context files currently present in
+each directory. The sync workflow refreshes this table when it opens a
+publication pull request.
+
+| Directory | Files |
+| --- | ---: |
+| `class/` | 22 |
+| `property/` | 81 |
+| `vocab/` | 176 |
+| `vocab/` direct files | 2 |
+| `vocab/contributorType/` | 24 |
+| `vocab/dateType/` | 14 |
+| `vocab/descriptionType/` | 8 |
+| `vocab/funderIdentifierType/` | 7 |
+| `vocab/identifierType/` | 3 |
+| `vocab/nameType/` | 4 |
+| `vocab/numberType/` | 6 |
+| `vocab/relatedIdentifierType/` | 25 |
+| `vocab/relationType/` | 41 |
+| `vocab/resourceTypeGeneral/` | 36 |
+| `vocab/titleType/` | 6 |
 
 ## License
 
@@ -40,12 +64,35 @@ The source toolkit used to generate these artifacts is maintained separately in
 From the source toolkit checkout:
 
 ```bash
-git switch w3id/prep
+git switch main
 npm run build:production-namespace
 ```
 
-Then copy the generated contents of `production-namespace/` to this repository
-root and validate:
+The generated `production-namespace/` bundle is synchronized into this
+publication repository by the `Sync production namespace` GitHub Actions
+workflow. Run the workflow from this repository and set `source_ref` to the
+toolkit branch, tag, or commit to publish. The workflow opens a pull request
+that copies only these generated paths:
+
+```text
+production-namespace/class/    -> class/
+production-namespace/property/ -> property/
+production-namespace/vocab/    -> vocab/
+production-namespace/context/  -> context/
+production-namespace/manifest/ -> manifest/
+production-namespace/dist/     -> dist/
+production-namespace/CHECKSUMS.sha256 -> CHECKSUMS.sha256
+```
+
+Repository-owned root files such as `.nojekyll`, `LICENSE`, `README.md`, and
+`index.html` are not overwritten by the sync workflow.
+
+The workflow uses this repository's built-in `GITHUB_TOKEN`. Repository Actions
+settings must allow read and write permissions, and must allow GitHub Actions to
+create pull requests.
+
+The workflow validates the generated checksums before opening a pull request.
+After reviewing the PR, validate the merged publication tree:
 
 ```bash
 find . -type f | wc -l
@@ -56,9 +103,9 @@ The `rg` command should return no matches.
 
 ## Publishing Checklist
 
-1. Commit the generated files in this repository.
-2. Push to `TIBHannover/datacite`.
-3. Enable GitHub Pages for the repository's `main` branch.
+1. Run the `Sync production namespace` workflow in this repository.
+2. Review and merge the generated sync pull request.
+3. Confirm that GitHub Pages is enabled for this repository's `main` branch.
 4. Confirm that `https://tibhannover.github.io/datacite/` serves the bundle.
 5. Add or update the corresponding `perma-id/w3id.org` redirect rules for
    `https://w3id.org/tib/datacite/`.

@@ -1,0 +1,111 @@
+name: Sync production namespace
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_ref:
+        description: Toolkit branch, tag, or commit to sync from
+        required: true
+        default: main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-production-namespace
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Open publication sync PR
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout publication repo
+        uses: actions/checkout@v4
+        with:
+          path: target
+
+      - name: Checkout toolkit repo
+        uses: actions/checkout@v4
+        with:
+          repository: TIBHannover/datacite-metadata-toolkit
+          ref: ${{ inputs.source_ref }}
+          path: source
+
+      - name: Verify generated namespace checksums
+        working-directory: source/production-namespace
+        run: shasum -a 256 -c CHECKSUMS.sha256
+
+      - name: Copy generated namespace
+        run: |
+          mkdir -p target/class target/property target/vocab target/context target/manifest target/dist
+          rsync -a --delete source/production-namespace/class/ target/class/
+          rsync -a --delete source/production-namespace/property/ target/property/
+          rsync -a --delete source/production-namespace/vocab/ target/vocab/
+          rsync -a --delete source/production-namespace/context/ target/context/
+          rsync -a --delete source/production-namespace/manifest/ target/manifest/
+          rsync -a --delete source/production-namespace/dist/ target/dist/
+          cp source/production-namespace/CHECKSUMS.sha256 target/CHECKSUMS.sha256
+
+      - name: Update generated file counts
+        working-directory: target
+        run: |
+          tmp_counts="$(mktemp)"
+          tmp_readme="$(mktemp)"
+
+          count_files() {
+            find "$1" -type f | wc -l | tr -d ' '
+          }
+
+          {
+            echo "## Generated File Counts"
+            echo
+            echo "Counts include generated JSON-LD, HTML, and context files currently present in"
+            echo "each directory. The sync workflow refreshes this table when it opens a"
+            echo "publication pull request."
+            echo
+            echo "| Directory | Files |"
+            echo "| --- | ---: |"
+            printf '| `class/` | %s |\n' "$(count_files class)"
+            printf '| `property/` | %s |\n' "$(count_files property)"
+            printf '| `vocab/` | %s |\n' "$(count_files vocab)"
+            printf '| `vocab/` direct files | %s |\n' "$(find vocab -maxdepth 1 -type f | wc -l | tr -d ' ')"
+            for dir in vocab/*/; do
+              [ -d "$dir" ] || continue
+              printf '| `%s` | %s |\n' "$dir" "$(find "$dir" -maxdepth 1 -type f | wc -l | tr -d ' ')"
+            done
+            echo
+          } > "$tmp_counts"
+
+          awk -v counts_file="$tmp_counts" '
+            $0 == "## Generated File Counts" {
+              while ((getline line < counts_file) > 0) print line
+              close(counts_file)
+              skip = 1
+              next
+            }
+            skip && $0 == "## License" {
+              skip = 0
+              print
+              next
+            }
+            !skip { print }
+          ' README.md > "$tmp_readme"
+
+          mv "$tmp_readme" README.md
+
+      - name: Open sync PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          path: target
+          branch: sync-production-namespace
+          base: main
+          delete-branch: true
+          commit-message: Sync production namespace
+          title: Sync production namespace
+          body: |
+            Syncs generated namespace files from TIBHannover/datacite-metadata-toolkit.
+
+            Source ref: `${{ inputs.source_ref }}`
