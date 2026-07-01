@@ -47,7 +47,6 @@ jobs:
           rsync -a --delete source/production-namespace/context/ target/context/
           rsync -a --delete source/production-namespace/manifest/ target/manifest/
           rsync -a --delete source/production-namespace/dist/ target/dist/
-          cp source/production-namespace/CHECKSUMS.sha256 target/CHECKSUMS.sha256
 
       - name: Update generated file counts
         working-directory: target
@@ -95,6 +94,12 @@ jobs:
           ' README.md > "$tmp_readme"
 
           mv "$tmp_readme" README.md
+
+      - name: Write publication checksums
+        working-directory: target
+        run: |
+          find class property vocab context manifest dist -type f | LC_ALL=C sort | xargs shasum -a 256 > CHECKSUMS.sha256
+          shasum -a 256 -c CHECKSUMS.sha256
 
       - name: Open sync PR
         uses: peter-evans/create-pull-request@v6
