@@ -33,21 +33,21 @@ publication pull request.
 
 | Directory | Files |
 | --- | ---: |
-| `class/` | 22 |
-| `property/` | 81 |
-| `vocab/` | 176 |
+| `class/` | 43 |
+| `property/` | 161 |
+| `vocab/` | 339 |
 | `vocab/` direct files | 2 |
-| `vocab/contributorType/` | 24 |
-| `vocab/dateType/` | 14 |
-| `vocab/descriptionType/` | 8 |
-| `vocab/funderIdentifierType/` | 7 |
-| `vocab/identifierType/` | 3 |
-| `vocab/nameType/` | 4 |
-| `vocab/numberType/` | 6 |
-| `vocab/relatedIdentifierType/` | 25 |
-| `vocab/relationType/` | 41 |
-| `vocab/resourceTypeGeneral/` | 36 |
-| `vocab/titleType/` | 6 |
+| `vocab/contributorType/` | 47 |
+| `vocab/dateType/` | 27 |
+| `vocab/descriptionType/` | 15 |
+| `vocab/funderIdentifierType/` | 13 |
+| `vocab/identifierType/` | 5 |
+| `vocab/nameType/` | 7 |
+| `vocab/numberType/` | 11 |
+| `vocab/relatedIdentifierType/` | 49 |
+| `vocab/relationType/` | 81 |
+| `vocab/resourceTypeGeneral/` | 71 |
+| `vocab/titleType/` | 11 |
 
 ## License
 
