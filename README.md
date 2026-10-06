@@ -38,6 +38,7 @@ publication pull request.
 | `property/` | 161 |
 | `vocab/` | 339 |
 | `vocab/` direct files | 2 |
+| `mappings/` | 16 |
 | `vocab/contributorType/` | 47 |
 | `vocab/dateType/` | 27 |
 | `vocab/descriptionType/` | 15 |
