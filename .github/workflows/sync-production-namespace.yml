@@ -40,13 +40,14 @@ jobs:
 
       - name: Copy generated namespace
         run: |
-          mkdir -p target/class target/property target/vocab target/context target/manifest target/dist
+          mkdir -p target/class target/property target/vocab target/context target/manifest target/dist target/mappings
           rsync -a --delete source/production-namespace/class/ target/class/
           rsync -a --delete source/production-namespace/property/ target/property/
           rsync -a --delete source/production-namespace/vocab/ target/vocab/
           rsync -a --delete source/production-namespace/context/ target/context/
           rsync -a --delete source/production-namespace/manifest/ target/manifest/
           rsync -a --delete source/production-namespace/dist/ target/dist/
+          rsync -a --delete source/production-namespace/mappings/ target/mappings/
 
       - name: Update generated file counts
         working-directory: target
@@ -71,6 +72,7 @@ jobs:
             printf '| `property/` | %s |\n' "$(count_files property)"
             printf '| `vocab/` | %s |\n' "$(count_files vocab)"
             printf '| `vocab/` direct files | %s |\n' "$(find vocab -maxdepth 1 -type f | wc -l | tr -d ' ')"
+            printf '| `mappings/` | %s |\n' "$(count_files mappings)"
             for dir in vocab/*/; do
               [ -d "$dir" ] || continue
               printf '| `%s` | %s |\n' "$dir" "$(find "$dir" -maxdepth 1 -type f | wc -l | tr -d ' ')"
@@ -98,7 +100,7 @@ jobs:
       - name: Write publication checksums
         working-directory: target
         run: |
-          find class property vocab context manifest dist -type f | LC_ALL=C sort | xargs shasum -a 256 > CHECKSUMS.sha256
+          find class property vocab context manifest dist mappings -type f | LC_ALL=C sort | xargs shasum -a 256 > CHECKSUMS.sha256
           shasum -a 256 -c CHECKSUMS.sha256
 
       - name: Open sync PR
