@@ -1,13 +1,27 @@
 {
-  "artifactFileCount": 583,
+  "artifactFileCount": 593,
   "bundleChecksumAlgorithm": "sha256-of-CHECKSUMS.sha256",
-  "bundleChecksum": "5123e8976959e07973b1ba2c7d3de7ffdd2908a340385070f0bb1a0cba75d7d6",
+  "bundleChecksum": "a84d3f2f6dca7beea3bed541b7143032e1f57b7a04c835f4acda4a6771593a22",
   "checksumsFile": "CHECKSUMS.sha256",
   "excludedFromChecksum": [
     "CHECKSUMS.sha256",
-    "manifest/bundle-integrity.json"
+    "manifest/bundle-integrity.json",
+    ".nojekyll",
+    "LICENSE",
+    "README.md",
+    "index.html"
   ],
   "canonicalNamespace": "https://w3id.org/tib/datacite/",
   "publicationBaseUrl": "https://tibhannover.github.io/datacite/",
-  "pagesBasePath": "/datacite"
+  "pagesBasePath": "/datacite",
+  "includedDirectories": [
+    "class",
+    "property",
+    "vocab",
+    "context",
+    "manifest",
+    "dist",
+    "mappings",
+    "shapes"
+  ]
 }
