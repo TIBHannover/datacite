@@ -7,9 +7,16 @@ bundle for GitHub Pages.
 - GitHub Pages backend: `https://tibhannover.github.io/datacite/`
 - Source toolkit: `TIBHannover/datacite-metadata-toolkit`
 
-The files in this repository are generated publication artifacts. Make vocabulary
+The vocabulary directories contain generated publication artifacts. The root
+README, homepage, license, and `.nojekyll` are maintained in this repository. Make vocabulary
 source changes in the toolkit, regenerate the production namespace bundle there,
 then sync the generated bundle into this repository with a pull request.
+
+The current RDF modelling release is **4.7-r2**, based on DataCite schema 4.7.
+It changes how structured metadata is represented in RDF. Existing consumers
+should review the [migration guide](https://github.com/TIBHannover/datacite-metadata-toolkit/blob/main/README.md#revisions-of-one-datacite-version)
+before switching. Historical 4.7 exports remain available; use versioned files
+when you need a stable representation.
 
 ## Directory Layout
 
@@ -21,9 +28,10 @@ context/     JSON-LD contexts
 manifest/    Versioned inventories and release matrix files
 dist/        Bundled JSON-LD, Turtle, RDF/XML, and OWL distributions
 mappings/    Crosswalk mapping sets (SSSOM, JSKOS, SKOS) and the crosswalk guide
+shapes/      SHACL constraints for validating the 4.7-r2 RDF representation
 ```
 
-Each section also includes an `index.html` page for browsing through GitHub
+The first seven sections also include an `index.html` page for browsing through GitHub
 Pages.
 
 ## Generated File Counts
@@ -38,7 +46,8 @@ publication pull request.
 | `property/` | 161 |
 | `vocab/` | 339 |
 | `vocab/` direct files | 2 |
-| `mappings/` | 16 |
+| `mappings/` | 17 |
+| `shapes/` | 1 |
 | `vocab/contributorType/` | 47 |
 | `vocab/dateType/` | 27 |
 | `vocab/descriptionType/` | 15 |
@@ -83,11 +92,16 @@ production-namespace/vocab/    -> vocab/
 production-namespace/context/  -> context/
 production-namespace/manifest/ -> manifest/
 production-namespace/dist/     -> dist/
-production-namespace/CHECKSUMS.sha256 -> CHECKSUMS.sha256
+production-namespace/mappings/ -> mappings/
+production-namespace/shapes/   -> shapes/
 ```
 
 Repository-owned root files such as `.nojekyll`, `LICENSE`, `README.md`, and
-`index.html` are not overwritten by the sync workflow.
+`index.html` are preserved by the sync workflow. Only the generated file-count
+section of this README is refreshed. The workflow builds `CHECKSUMS.sha256` and
+`manifest/bundle-integrity.json` for the publication directories and checks that
+their files match the source bundle. Root documentation is excluded from that
+generated-file checksum list.
 
 The workflow uses this repository's built-in `GITHUB_TOKEN`. Repository Actions
 settings must allow read and write permissions, and must allow GitHub Actions to
@@ -97,7 +111,8 @@ The workflow validates the generated checksums before opening a pull request.
 After reviewing the PR, validate the merged publication tree:
 
 ```bash
-find . -type f | wc -l
+shasum -a 256 -c CHECKSUMS.sha256
+python3 .github/scripts/sync_namespace.py --target . --verify-only
 rg -n --glob '!README.md' "schema\\.stage\\.datacite\\.org|schema\\.datacite\\.org/linked-data|datacite//|Linked Data \\(Staging\\)" .
 ```
 
