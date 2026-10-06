@@ -20,6 +20,7 @@ vocab/       SKOS concept schemes and controlled terms
 context/     JSON-LD contexts
 manifest/    Versioned inventories and release matrix files
 dist/        Bundled JSON-LD, Turtle, RDF/XML, and OWL distributions
+mappings/    Crosswalk mapping sets (SSSOM, JSKOS, SKOS) and the crosswalk guide
 ```
 
 Each section also includes an `index.html` page for browsing through GitHub
