@@ -29,6 +29,7 @@ manifest/    Versioned inventories and release matrix files
 dist/        Bundled JSON-LD, Turtle, RDF/XML, and OWL distributions
 mappings/    Crosswalk mapping sets (SSSOM, JSKOS, SKOS) and the crosswalk guide
 shapes/      SHACL constraints for validating the 4.7-r2 RDF representation
+schema-profiles/ JSON Schema for validating DataCite API records
 ```
 
 The first seven sections also include an `index.html` page for browsing through GitHub
@@ -48,6 +49,7 @@ publication pull request.
 | `vocab/` direct files | 2 |
 | `mappings/` | 17 |
 | `shapes/` | 1 |
+| `schema-profiles/` | 2 |
 | `vocab/contributorType/` | 47 |
 | `vocab/dateType/` | 27 |
 | `vocab/descriptionType/` | 15 |
@@ -94,6 +96,7 @@ production-namespace/manifest/ -> manifest/
 production-namespace/dist/     -> dist/
 production-namespace/mappings/ -> mappings/
 production-namespace/shapes/   -> shapes/
+production-namespace/schema-profiles/ -> schema-profiles/
 ```
 
 Repository-owned root files such as `.nojekyll`, `LICENSE`, `README.md`, and

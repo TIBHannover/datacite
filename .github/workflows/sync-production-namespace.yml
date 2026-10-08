@@ -67,6 +67,7 @@ jobs:
             printf '| `vocab/` direct files | %s |\n' "$(find vocab -maxdepth 1 -type f | wc -l | tr -d ' ')"
             printf '| `mappings/` | %s |\n' "$(count_files mappings)"
             printf '| `shapes/` | %s |\n' "$(count_files shapes)"
+            printf '| `schema-profiles/` | %s |\n' "$(count_files schema-profiles)"
             for dir in vocab/*/; do
               [ -d "$dir" ] || continue
               printf '| `%s` | %s |\n' "$dir" "$(find "$dir" -maxdepth 1 -type f | wc -l | tr -d ' ')"
