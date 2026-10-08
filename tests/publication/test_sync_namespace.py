@@ -33,6 +33,7 @@ class PublicationSyncTest(unittest.TestCase):
         roots = {name: (self.target / name).read_bytes() for name in syncer.ROOT_FILES}
         syncer.sync(self.source, self.target)
         self.assertEqual((self.target / 'shapes/example.txt').read_text(), 'shapes')
+        self.assertEqual((self.target / 'schema-profiles/example.txt').read_text(), 'schema-profiles')
         self.assertFalse((self.target / 'shapes/stale.ttl').exists())
         self.assertEqual(roots, {name: (self.target / name).read_bytes() for name in roots})
         self.assertNotIn(syncer.INTEGRITY, (self.target / 'CHECKSUMS.sha256').read_text())
@@ -70,6 +71,7 @@ class PublicationSyncTest(unittest.TestCase):
 
     def test_older_bundle_without_shapes_can_still_sync(self):
         shutil.rmtree(self.source / 'shapes')
+        shutil.rmtree(self.source / 'schema-profiles')
         syncer.write_integrity(self.source, {})
         syncer.sync(self.source, self.target)
         self.assertFalse((self.target / 'shapes').exists())

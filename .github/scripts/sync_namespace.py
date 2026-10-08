@@ -7,7 +7,8 @@ import shutil
 import subprocess
 from pathlib import Path
 
-DIRECTORIES = ("class", "property", "vocab", "context", "manifest", "dist", "mappings", "shapes")
+REQUIRED_DIRECTORIES = ("class", "property", "vocab", "context", "manifest", "dist", "mappings")
+DIRECTORIES = (*REQUIRED_DIRECTORIES, "shapes", "schema-profiles")
 INTEGRITY = "manifest/bundle-integrity.json"
 ROOT_FILES = {"README.md", "LICENSE", ".nojekyll", "index.html"}
 
@@ -62,7 +63,7 @@ def sync(source, target):
     unknown = {p.name for p in source.iterdir()} - set(DIRECTORIES) - ROOT_FILES - {"CHECKSUMS.sha256"}
     if unknown:
         raise ValueError(f"Unrecognized source bundle paths: {sorted(unknown)}")
-    for name in DIRECTORIES[:-1]:
+    for name in REQUIRED_DIRECTORIES:
         if not (source / name).is_dir():
             raise ValueError(f"Missing required source directory: {name}")
     protected = {name: (target / name).read_bytes() for name in ROOT_FILES if (target / name).exists()}
